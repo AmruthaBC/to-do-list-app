@@ -1,14 +1,12 @@
-import { faCircleCheck, faEdit, faPen, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import AddTask from "./components/AddTask";
+import UpdateTask from "./components/UpdateTask";
+import ToDoList from "./components/TodoList";
 
 
 function App() {
 
   const [todo, setTodo] = useState([
-    { "id": 1, "title": "Task 1", "status": true },
-    { "id": 3, "title": "Task 3", "status": false },
-    { "id": 2, "title": "Task 2", "status": false }
   ])
 
   const [addTask, setAddTask] = useState('');
@@ -16,7 +14,8 @@ function App() {
 
   const addTaskClick = () => {
     if(addTask) {
-      let num = addTask.length + 1;
+      let num = todo.length + 1;
+      console.log(addTask.length);
       let newTaskAdded = { id: num, title: addTask, status: false }
       setTodo([...todo, newTaskAdded]);
       setAddTask('')
@@ -69,80 +68,38 @@ function App() {
             (
               <>
                 {/* Update task */}
-                <div className="flex gap-2 mb-4">
-                  <input
-                    type="text"
-                    value={updateTask && updateTask.title}
-                    onChange={(e) => handleChangeTask(e)}
-                    className="px-2 text-sm rounded w-full flex-1"
-                    style={{ outline: 'none' }}
-                  />
-                  <button className="px-5 py-1 text-sm font-semibold bg-emerald-200 rounded" onClick={handleUpdateTask}>Update</button>
-                  <button className="px-5 py-1 text-sm font-semibold bg-amber-200 rounded" onClick={handleCancelUpdate}>Cancel</button>
-                </div>
+                <UpdateTask
+                  updateTask={updateTask}
+                  handleChangeTask={handleChangeTask}
+                  handleUpdateTask={handleUpdateTask}
+                  handleCancelUpdate={handleCancelUpdate}
+                />
               </>
             )
             :
             (
               <>
                 {/* Add task */}
-                <div className="flex gap-2 mb-6">
-                  <input
-                    type="text"
-                    value={addTask}
-                    onChange={ (e) => setAddTask(e.target.value) }
-                    className="px-2 text-sm rounded w-full flex-1" 
-                    style={{ outline: 'none' }}
-                  />
-                  <button className="px-4 py-1 text-sm font-semibold bg-emerald-200 rounded" onClick={addTaskClick}>Add task</button>
-                </div>
+                <AddTask 
+                  addTask={addTask}
+                  setAddTask={setAddTask}
+                  addTaskClick={addTaskClick}
+                />
               </>
             )
           }
 
           {/* Tasks go here */}
-          <div className="overflow-y-auto" style={{ height: '60vh' }}>
-            <div className="text-white text-base">
-              {todo && todo
-              .sort((a,b) => a.id > b.id ? 1 : -1)
-              .map((list, index) => 
-                <div className="border border-gray-200 rounded px-2 py-1 mb-2 flex gap-2 justify-between" key={list.id}>
-                  <p className={`m-0 ${list.status ? 'line-through text-gray-400' : ''}`}>
-                    <span className="px-1.5 py-0.5 text-xs rounded-full border border-gray-400 inline-block">{index + 1}</span> {list.title}
-                  </p>
-                  <div className="flex gap-2">
-                    <span
-                      className="cursor-pointer"
-                      title="Completed"
-                      onClick={() => taskComplete(list.id)}
-                    >
-                      <FontAwesomeIcon icon={faCircleCheck}  />
-                    </span>
-                    {list.status ? false : (
-                      <span
-                        className="cursor-pointer"
-                        title="Edit"
-                        onClick={() => setUpdateTask({
-                          id: list.id,
-                          title: list.title,
-                          status: list.status ? true : false
-                        })}
-                      >
-                        <FontAwesomeIcon icon={faEdit} />
-                      </span>
-                    )}
-                    <span
-                      className="cursor-pointer"
-                      title="Delete"
-                      onClick={() => deleteTask(list.id)}
-                    >
-                      <FontAwesomeIcon icon={faTrashCan} />
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          {todo && todo.length ? '' : 'No Tasks...'}
+
+          <ToDoList
+            todo={todo}
+            taskComplete={taskComplete}
+            setUpdateTask={setUpdateTask}
+            deleteTask={deleteTask}
+          />
+
+
         </div>
       </div>
     </div>
